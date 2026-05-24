@@ -1,202 +1,182 @@
+# GLSimpleSQL — Interpréteur de Requêtes SQL Simplifiées
 
+![C](https://img.shields.io/badge/C-A8B9CC?style=flat-square&logo=c&logoColor=white)
+![Flex](https://img.shields.io/badge/Flex-Lexical_Analyzer-blue?style=flat-square)
+![Bison](https://img.shields.io/badge/Bison-Parser_Generator-orange?style=flat-square)
+![Status](https://img.shields.io/badge/Status-Completed-success?style=flat-square)
 
-#  — Mini Projet GLSimpleSQL
+Interpréteur de requêtes SQL simplifiées développé en langage C, utilisant Flex pour l'analyse lexicale et Bison pour l'analyse syntaxique, dans le cadre du module Théorie des Langages et Compilation.
 
-**Théorie des Langages et Compilation – Année 2025/2026**
-**Interpréteur de requêtes SQL simplifiées (Flex & Bison)**
+---
 
+## Description
 
-##  1. Description du Projet
+GLSimpleSQL est un interpréteur qui analyse, valide et affiche des informations détaillées sur des requêtes SQL simplifiées. Il ne s'agit pas d'un vrai SGBD — l'interpréteur effectue uniquement l'analyse lexicale, syntaxique et sémantique des requêtes.
 
-Ce projet consiste à développer un **interpréteur de requêtes SQL simplifiées** appelé *GLSimpleSQL*.
-Il a été réalisé en langage **C**, avec :
+> Faculté des Sciences et Techniques — Errachidia | Module I513 — LST GL S5 | 2025–2026
 
-* **Flex** pour l’analyse lexicale
-* **Bison** pour l’analyse syntaxique
-* Une **gestion sémantique** permettant d’effectuer vérifications et statistiques
+---
 
- **Important :**
-Cet interpréteur **n’exécute pas les requêtes sur une vraie base de données**. Il se limite à analyser, valider et afficher des informations détaillées sur les requêtes SQL.
+## Fonctionnalités
 
+- Analyse lexicale avec Flex
+- Analyse syntaxique avec Bison (grammaire LALR)
+- Gestion d'une table des symboles (tables, champs, types)
+- Vérifications sémantiques complètes
+- Détection et affichage d'erreurs lexicales, syntaxiques et sémantiques
+- Exécution depuis un fichier ou en mode interactif
 
-##  2. Objectifs Pédagogiques
+---
 
-Ce projet permet de :
+## Commandes SQL Supportées
 
-* Maîtriser **Flex** (analyse lexicale)
-* Comprendre et implémenter **Bison** (analyse syntaxique)
-* Manipuler une **grammaire formelle**
-* Construire des **actions sémantiques**
-* Gérer une **table des symboles** (tables, champs, types)
-* Détecter et afficher des **erreurs lexicales, syntaxiques et sémantiques**
+| Commande | Description |
+|----------|-------------|
+| CREATE TABLE | Créer une table avec colonnes et types |
+| INSERT INTO | Insérer des valeurs dans une table |
+| SELECT | Interroger une table avec ou sans WHERE |
+| UPDATE | Modifier des lignes existantes |
+| DELETE | Supprimer des lignes selon une condition |
+| DROP TABLE | Supprimer une table entière |
 
+---
 
+## Types et Opérateurs
 
-##  3. Fonctionnalités Supportées
+**Types supportés :** INT, FLOAT, VARCHAR(n), BOOL
 
-L’interpréteur reconnaît les commandes suivantes du langage **GLSimpleSQL** :
+**Opérateurs de comparaison :** =, !=, <, >, <=, >=
 
-###  CREATE TABLE
+**Opérateurs logiques :** AND, OR, NOT
 
-Créer une table avec champs et types.
+---
 
-###  INSERT INTO
-
-Insérer des valeurs dans une table.
-
-###  SELECT
-
-Interroger une table, avec ou sans clause WHERE.
-
-###  UPDATE
-
-Modifier des lignes existantes.
-
-###  DELETE
-
-Supprimer des lignes ou vider une table.
-
-###  DROP TABLE
-
-Supprimer une table entière.
-
-
-
-##  4. Types et Opérateurs Supportés
-
-### Types :
-
-* `INT`
-* `FLOAT`
-* `VARCHAR(n)`
-* `BOOL`
-
-### Opérateurs :
-
-* Comparaison : `=`, `!=`, `<`, `>`, `<=`, `>=`
-* Logiques : `AND`, `OR`, `NOT`
-
-
-
-##  5. Structure du Projet
+## Structure du Projet
 
 ```
 MiniProjet/
-│── src/
-│   ├── lexer.l           -> Analyseur lexical (Flex)
-│   ├── parser.y          -> Analyseur syntaxique (Bison)
-│   ├── main.c            -> Point d’entrée du programme
-│   ├── symbols.c/h       -> Gestion de la table des symboles
-│   ├── semantic.c/h      -> Actions sémantiques
-│
-│── tests/
+├── src/
+│   ├── lexer.l         # Analyseur lexical (Flex)
+│   ├── parser.y        # Analyseur syntaxique (Bison)
+│   ├── main.c          # Point d'entrée du programme
+│   ├── symbols.c/h     # Gestion de la table des symboles
+│   └── semantic.c/h    # Actions sémantiques
+├── tests/
 │   ├── test1.sql
 │   ├── test2.sql
-│   ├── erreurs.sql
-│
-│── build/
-│   └── fichiers générés (p.tab.c, lex.yy.c…)
-│
-│── Grammaire.pdf        -> Grammaire complète GLSimpleSQL
-│── Rapport.pdf          -> Rapport détaillé
-│── README.md            ->Ce fichier
+│   └── erreurs.sql
+├── build/
+│   └── fichiers générés (parser.tab.c, lex.yy.c)
+├── Grammaire.pdf
+└── README.md
 ```
 
+---
 
+## Compilation et Exécution
 
-##  6. Compilation et Exécution
+### Prérequis
 
-### 1️ Génération des fichiers Flex/Bison
+- GCC
+- Flex
+- Bison
+
+### Compilation
 
 ```bash
-bison -d parser.y  
+bison -d parser.y
 flex lexer.l
-gcc parser.tab.c lex.yy.c main.c -o glsql
+gcc parser.tab.c lex.yy.c main.c -o glsql -lfl
 ```
 
-### 2️ Lancer l'interpréteur
+### Exécution avec un fichier
+
+```bash
+./glsql test.txt
+```
+
+### Exécution interactive
 
 ```bash
 ./glsql
 ```
 
-### 3️ Saisir une requête SQL simplifiée 
-*« Chaque fichier test doit contenir une seule requête SQL simplifiée !!! »*
+---
 
-Exemple :
+## Exemple d'utilisation
 
-```
-CREATE TABLE Etudiant(id INT, nom VARCHAR(50), age INT);
+Entrée :
+```sql
+CREATE TABLE Etudiant (id INT, nom VARCHAR(50), age INT);
 INSERT INTO Etudiant VALUES (1, 'Ali', 22);
 SELECT nom FROM Etudiant WHERE age > 20;
+UPDATE Etudiant SET age = 23 WHERE id = 1;
+DELETE FROM Etudiant WHERE age < 18;
+DROP TABLE Etudiant;
 ```
 
-
-##  7. Actions Sémantiques Implémentées
-
-Pour chaque requête, le programme affiche des statistiques :
-
-### Exemple SELECT :
-
+Sortie :
 ```
-Requête SELECT analysée :
-- Table : Client
-- Nombre de champs : 2 (nom, prenom)
-- Clause WHERE : OUI
-- Nombre de conditions : 1
-- Opérateurs logiques : 0
+=== Interpreteur GLSimpleSQL ===
+CREATE TABLE detecte : Etudiant
+INSERT INTO Etudiant : 3 valeurs (nombre correct)
+SELECT avec WHERE, table=Etudiant, nb_champs=1 (colonnes OK)
+UPDATE table=Etudiant : 1 modifications (colonnes SET/WHERE verifiees)
+DELETE conditionnel table=Etudiant (colonnes WHERE verifiees)
+DROP TABLE Etudiant
+=== Fin de l'analyse SQL ===
 ```
 
-### Vérifications accomplies :
+---
 
-* Table existante / inexistante
-* Champs valides
-* Nombre de valeurs correct (INSERT)
-* Duplications de tables (CREATE)
-* Utilisation incorrecte de `*`
-* Suppression d’une table inexistante
+## Gestion des Erreurs
 
-### Erreurs claires (exemples) :
+| Type d'erreur | Exemple |
+|---------------|---------|
+| Table inexistante | SELECT * FROM Produit; |
+| Colonne inexistante | SELECT prix FROM Etudiant; |
+| Nombre de valeurs incorrect | INSERT INTO Etudiant VALUES (1, 'Ali'); |
+| Table déjà existante | CREATE TABLE Etudiant (id INT); |
+| Erreur syntaxique | SELECT FROM Etudiant; |
 
+Exemple de message d'erreur :
 ```
-ERREUR SÉMANTIQUE ligne 3 :
+ERREUR SEMANTIQUE ligne 3 :
 La table 'Produit' n'existe pas.
 ```
 
-###  Tests d'erreurs :
+---
 
-* Table inexistante
-* Champ inexistant
-* Nombre de valeurs incorrect
-* Syntaxes invalides
-* Table déjà existante
+## Actions Sémantiques
 
+Pour chaque requête analysée, le programme affiche des statistiques détaillées.
 
-##  9. Livrables Fournis
+Exemple pour SELECT :
+```
+Requete SELECT analysee :
+- Table : Etudiant
+- Nombre de champs : 2 (nom, age)
+- Clause WHERE : OUI
+- Nombre de conditions : 1
+- Operateurs logiques : 0
+```
 
-*  Code source complet
-*  Grammaire complète — *Grammaire.pdf*
-*  Rapport détaillé — *Rapport.pdf*
-*  Vidéo de démonstration
-*  README.md (ce fichier)
+---
 
+## Ressources
 
-##  10. Auteurs
+- [Manuel Flex](https://westes.github.io/flex/manual/)
+- [Manuel Bison](https://www.gnu.org/software/bison/manual/)
 
-Mini projet réalisé par HAJIR SALAH EDDINE, KASRI CHOUAYB, MERIZAK FERDAOUSSE,KHYAR IBTISSAM, dans le cadre du module **Théorie des Langages et Compilation (I513)**, filière **LST GL S5**.
+---
 
-Professeur encadrant :
-**<3 MOUHNI NAOUAL <3**
+## Auteurs
 
+| Nom | Filière |
+|-----|---------|
+| KASRI Chouayb | LST Génie Logiciel |
+| HAJIR Salah Eddine | LST Génie Logiciel |
+| MERIZAK Ferdaousse | LST Génie Logiciel |
+| KHYAR Ibtissam | LST Génie Logiciel |
 
-##  11. Ressources Utilisées
-
-* Manuel Flex:  https://westes.github.io/flex/manual/
-* Manuel Bison:  https://www.gnu.org/software/bison/manual/
-* GCC: https://www.youtube.com/watch?v=oC69vlWofJQ&t=41s
-* Visual Studio Code
-* LMMS(large langage models): ChatGPT, DeepSeek
-
-
-
-
+Encadrant : Mme MOUHNI Naoual — FST Errachidia
