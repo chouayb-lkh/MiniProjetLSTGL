@@ -11,7 +11,7 @@ Interpréteur de requêtes SQL simplifiées développé en langage C, utilisant 
 
 ## Description
 
-GLSimpleSQL est un interpréteur qui analyse, valide et affiche des informations détaillées sur des requêtes SQL simplifiées. Il ne s'agit pas d'un vrai SGBD — l'interpréteur effectue uniquement l'analyse lexicale, syntaxique et sémantique des requêtes.
+GLSimpleSQL analyse, valide et affiche des informations détaillées sur des requêtes SQL simplifiées. Il ne s'agit pas d'un vrai SGBD — l'interpréteur effectue uniquement l'analyse lexicale, syntaxique et sémantique des requêtes.
 
 > Faculté des Sciences et Techniques — Errachidia | Module I513 — LST GL S5 | 2025–2026
 
@@ -54,21 +54,15 @@ GLSimpleSQL est un interpréteur qui analyse, valide et affiche des informations
 ## Structure du Projet
 
 ```
-MiniProjet/
-├── src/
-│   ├── lexer.l         # Analyseur lexical (Flex)
-│   ├── parser.y        # Analyseur syntaxique (Bison)
-│   ├── main.c          # Point d'entrée du programme
-│   ├── symbols.c/h     # Gestion de la table des symboles
-│   └── semantic.c/h    # Actions sémantiques
-├── tests/
-│   ├── test1.sql
-│   ├── test2.sql
-│   └── erreurs.sql
-├── build/
-│   └── fichiers générés (parser.tab.c, lex.yy.c)
-├── Grammaire.pdf
-└── README.md
+miniprojet/
+├── main.c              # Point d'entrée du programme
+├── flex.l              # Analyseur lexical (Flex)
+├── bison.y             # Analyseur syntaxique (Bison)
+├── bison.tab.c         # Fichier généré par Bison
+├── bison.tab.h         # En-tête généré par Bison
+├── lex.yy.c            # Fichier généré par Flex
+├── test.txt            # Requêtes SQL valides
+└── testE.txt           # Cas d'erreurs
 ```
 
 ---
@@ -84,33 +78,34 @@ MiniProjet/
 ### Compilation
 
 ```bash
-bison -d parser.y
-flex lexer.l
-gcc parser.tab.c lex.yy.c main.c -o glsql -lfl
+bison -d bison.y
+flex flex.l
+gcc bison.tab.c lex.yy.c main.c -o miniprojet -lfl
 ```
 
 ### Exécution avec un fichier
 
 ```bash
-./glsql test.txt
+./miniprojet test.txt
 ```
 
 ### Exécution interactive
 
 ```bash
-./glsql
+./miniprojet
 ```
 
 ---
 
 ## Exemple d'utilisation
 
-Entrée :
+Entrée (`test.txt`) :
 ```sql
 CREATE TABLE Etudiant (id INT, nom VARCHAR(50), age INT);
-INSERT INTO Etudiant VALUES (1, 'Ali', 22);
-SELECT nom FROM Etudiant WHERE age > 20;
-UPDATE Etudiant SET age = 23 WHERE id = 1;
+INSERT INTO Etudiant VALUES (1, 'Diallo', 20);
+SELECT * FROM Etudiant;
+SELECT nom, age FROM Etudiant WHERE age > 18;
+UPDATE Etudiant SET age = 21 WHERE id = 1;
 DELETE FROM Etudiant WHERE age < 18;
 DROP TABLE Etudiant;
 ```
@@ -120,7 +115,8 @@ Sortie :
 === Interpreteur GLSimpleSQL ===
 CREATE TABLE detecte : Etudiant
 INSERT INTO Etudiant : 3 valeurs (nombre correct)
-SELECT avec WHERE, table=Etudiant, nb_champs=1 (colonnes OK)
+SELECT simple, table=Etudiant, nb_champs=1 (colonnes OK)
+SELECT avec WHERE, table=Etudiant, nb_champs=2 (colonnes OK)
 UPDATE table=Etudiant : 1 modifications (colonnes SET/WHERE verifiees)
 DELETE conditionnel table=Etudiant (colonnes WHERE verifiees)
 DROP TABLE Etudiant
@@ -141,24 +137,10 @@ DROP TABLE Etudiant
 
 Exemple de message d'erreur :
 ```
-ERREUR SEMANTIQUE ligne 3 :
-La table 'Produit' n'existe pas.
-```
-
----
-
-## Actions Sémantiques
-
-Pour chaque requête analysée, le programme affiche des statistiques détaillées.
-
-Exemple pour SELECT :
-```
-Requete SELECT analysee :
-- Table : Etudiant
-- Nombre de champs : 2 (nom, age)
-- Clause WHERE : OUI
-- Nombre de conditions : 1
-- Operateurs logiques : 0
+ERREUR : table 'Produit' inexistante pour SELECT.
+ERREUR : colonne 'prix' inexistante dans la table 'Etudiant' pour SELECT.
+ERREUR : 2 valeurs fournies, mais la table 'Etudiant' a 3 colonnes.
+Erreur syntaxique ligne 23 : syntax error
 ```
 
 ---
